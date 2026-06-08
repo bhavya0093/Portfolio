@@ -1,8 +1,7 @@
-/* Front-end Micro-Interactions & Theme Sync */
-
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initNavbarScroll();
+    initMobileMenu();
     initScrollAnimations();
     initTypingEffect();
     initProjectFilters();
@@ -11,56 +10,143 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* 1. Theme Management (Dark/Light Mode) */
 function initTheme() {
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    if (!themeToggleBtn) return;
+    const themeToggleBtns = document.querySelectorAll('.btn-theme-toggle');
+    if (!themeToggleBtns.length) return;
 
-    const darkIcon = themeToggleBtn.querySelector('.theme-icon-dark');
-    const lightIcon = themeToggleBtn.querySelector('.theme-icon-light');
     const htmlEl = document.documentElement;
 
     // Get theme from local storage or system preferences
     const savedTheme = localStorage.getItem('portfolio-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    const currentTheme = savedTheme || 'light';
 
     // Apply active theme
     setTheme(currentTheme);
 
-    themeToggleBtn.addEventListener('click', () => {
-        const targetTheme = htmlEl.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
-        setTheme(targetTheme);
+    themeToggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTheme = htmlEl.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+            setTheme(targetTheme);
+        });
     });
 
     function setTheme(theme) {
         htmlEl.setAttribute('data-bs-theme', theme);
         localStorage.setItem('portfolio-theme', theme);
 
-        if (theme === 'dark') {
-            darkIcon.classList.remove('d-none');
-            lightIcon.classList.add('d-none');
-        } else {
-            darkIcon.classList.add('d-none');
-            lightIcon.classList.remove('d-none');
-        }
+        themeToggleBtns.forEach(btn => {
+            const darkIcon = btn.querySelector('.theme-icon-dark, .mobile-theme-icon-dark');
+            const lightIcon = btn.querySelector('.theme-icon-light, .mobile-theme-icon-light');
+            if (theme === 'dark') {
+                if (darkIcon) darkIcon.classList.remove('d-none');
+                if (lightIcon) lightIcon.classList.add('d-none');
+            } else {
+                if (darkIcon) darkIcon.classList.add('d-none');
+                if (lightIcon) lightIcon.classList.remove('d-none');
+            }
+        });
     }
 }
 
-/* 2. Navbar Styling on Scroll */
+/* 2. Navbar Styling, Scroll Progress & Scrollspy */
 function initNavbarScroll() {
     const navbar = document.querySelector('.custom-navbar');
+    const progressIndicator = document.getElementById('scroll-progress');
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.custom-navbar .nav-link, .overlay-nav-link');
+    
     if (!navbar) return;
 
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
+        const scrollY = window.scrollY;
+
+        // 2a. Shrink Navbar
+        if (scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
+        }
+
+        // 2b. Update Scroll Progress Bar
+        if (progressIndicator) {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = docHeight > 0 ? (scrollY / docHeight) * 100 : 0;
+            progressIndicator.style.width = scrollPercent + '%';
+        }
+
+        // 2c. Scrollspy Section Highlighting
+        let activeSectionId = '';
+        const scrollPosition = scrollY + 180; // Offset for navbar height
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+
+            if (scrollPosition >= sectionTop && scrollPosition < (sectionTop + sectionHeight)) {
+                activeSectionId = sectionId;
+            }
+        });
+
+        // Default back to Hero if scrolled to the top
+        if (scrollY < 100) {
+            activeSectionId = 'hero';
+        }
+
+        if (activeSectionId) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${activeSectionId}`) {
+                    link.classList.add('active');
+                }
+            });
         }
     });
 
     // Handle initial state on load
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
+    }
+}
+
+/* 2.5 Mobile Full-Screen Overlay Menu */
+function initMobileMenu() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('overlay-close');
+    const menuOverlay = document.getElementById('mobile-overlay-menu');
+    const overlayLinks = document.querySelectorAll('.overlay-nav-link');
+
+    if (!toggleBtn || !menuOverlay) return;
+
+    toggleBtn.addEventListener('click', () => {
+        const isOpen = menuOverlay.classList.contains('open');
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeMenu);
+    }
+
+    // Close menu when clicking on any link
+    overlayLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMenu();
+        });
+    });
+
+    function openMenu() {
+        menuOverlay.classList.add('open');
+        toggleBtn.classList.add('open');
+        document.body.style.overflow = 'hidden'; // Disable scroll on body
+    }
+
+    function closeMenu() {
+        menuOverlay.classList.remove('open');
+        toggleBtn.classList.remove('open');
+        document.body.style.overflow = ''; // Enable scroll on body
     }
 }
 

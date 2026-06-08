@@ -1,0 +1,73 @@
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
+        <div class="container">
+
+            
+            <!-- Custom Mobile Menu Toggle Trigger -->
+            <button class="custom-navbar-toggler d-lg-none" type="button" id="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="toggler-line line-1"></span>
+                <span class="toggler-line line-2"></span>
+                <span class="toggler-line line-3"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#skills">Skills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#experience">Experience</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#achievements">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <!-- Theme Toggle Switch -->
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <button class="btn btn-theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
+                            <i class="bi bi-moon-stars-fill theme-icon-dark"></i>
+                            <i class="bi bi-sun-fill theme-icon-light d-none"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Custom Mobile Full-Screen Glass Overlay Menu -->
+    <div class="mobile-glass-overlay" id="mobile-overlay-menu">
+        <div class="overlay-header d-flex justify-content-between align-items-center px-4 py-3">
+            <span class="logo-brand">{% if profile %}{{ profile.logo_text }}{% else %}Bhavya.Dev{% endif %}</span>
+            <button class="overlay-close-btn" id="overlay-close" aria-label="Close Menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="overlay-body d-flex flex-column align-items-center justify-content-center">
+            <ul class="overlay-nav-list text-center">
+                <li><a href="#about" class="overlay-nav-link">About</a></li>
+                <li><a href="#skills" class="overlay-nav-link">Skills</a></li>
+                <li><a href="#services" class="overlay-nav-link">Services</a></li>
+                <li><a href="#experience" class="overlay-nav-link">Experience</a></li>
+                <li><a href="#projects" class="overlay-nav-link">Projects</a></li>
+                <li><a href="#achievements" class="overlay-nav-link">Achievements</a></li>
+                <li><a href="#contact" class="overlay-nav-link">Contact</a></li>
+                <li class="mt-4">
+                    <button class="btn btn-theme-toggle mx-auto" id="theme-toggle-btn-mobile" aria-label="Toggle theme">
+                        <i class="bi bi-moon-stars-fill mobile-theme-icon-dark"></i>
+                        <i class="bi bi-sun-fill mobile-theme-icon-light d-none"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
